@@ -1,7 +1,8 @@
 """Application settings and environment configuration."""
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, Union
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./medtrace.db"
 
     # CORS
-    CORS_ORIGINS: list[str] = [
+    CORS_ORIGINS: Union[list[str], str] = [
         "http://localhost:8080",
         "http://127.0.0.1:8080",
         "http://localhost:3000",
@@ -30,6 +31,22 @@ class Settings(BaseSettings):
         "https://medtrace-ai.netlify.app",
         "https://medtraceai.netlify.app",
     ]
+
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Any) -> list[str]:
+        if isinstance(v, str):
+            v = v.strip()
+            if v.startswith("[") and v.endswith("]"):
+                import json
+                try:
+                    return json.loads(v)
+                except Exception:
+                    pass
+            return [i.strip() for i in v.split(",") if i.strip()]
+        elif isinstance(v, (list, tuple)):
+            return [str(i).strip() for i in v if str(i).strip()]
+        return []
 
     # File uploads
     MAX_UPLOAD_SIZE_MB: int = 25
@@ -66,7 +83,9 @@ class Settings(BaseSettings):
     def cors_origins(self) -> list[str]:
         if self.ENVIRONMENT.lower() != "production":
             return ["*"]
-        return self.CORS_ORIGINS
+        if isinstance(self.CORS_ORIGINS, str):
+            return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip() and o.strip() != "*"]
+        return [o for o in self.CORS_ORIGINS if o != "*"]
 
     @property
     def is_production(self) -> bool:

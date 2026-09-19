@@ -52,12 +52,10 @@ def create_app() -> FastAPI:
     )
 
     # --- CORS --------------------------------------------------------
-    if settings.is_production and "*" in settings.cors_origins:
-        raise RuntimeError("Wildcard CORS origin is not allowed in production")
-
+    cors_list = [o for o in settings.cors_origins if o != "*"] if settings.is_production else settings.cors_origins
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins,
+        allow_origins=cors_list,
         allow_credentials=True,
         allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
         allow_headers=["*"],
