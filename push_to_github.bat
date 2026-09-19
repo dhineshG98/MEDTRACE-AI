@@ -16,7 +16,7 @@ echo.
 echo [2/2] Pushing to https://github.com/kysanthosh-it/medtrace-ai.git ...
 echo (If a GitHub sign-in window appears in your browser, please approve it)
 echo.
-git push -u origin main
+git push -u -f origin main
 
 echo.
 echo ========================================================
