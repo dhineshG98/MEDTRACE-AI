@@ -28,4 +28,14 @@ services:
       - key: API_AUTH_TOKEN
         generateValue: true
       - key: CORS_ORIGINS
-        value: "https://medtrace-ai.netlify.app,https://medtraceai.netlify.app,http://localhost:8080,http://localhost:3000"
+        value: "https://medtrace-ai-web.onrender.com,https://medtrace-ai.netlify.app,https://medtraceai.netlify.app,http://localhost:8080,http://localhost:3000"
+
+  - type: static
+    name: medtrace-ai-web
+    region: oregon
+    plan: free
+    staticPublishPath: frontend/MedTraceAI/build/web
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
