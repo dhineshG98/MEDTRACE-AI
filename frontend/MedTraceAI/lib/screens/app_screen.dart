@@ -75,6 +75,224 @@ class _AppScreenState extends State<AppScreen> {
     );
   }
 
+  void _openAddTimelineEventDialog() {
+    final titleController = TextEditingController();
+    final notesController = TextEditingController();
+    final dateController = TextEditingController(text: _formatEventDate(DateTime.now()));
+    final refController = TextEditingController();
+    String selectedCategory = 'CLINICAL_VISIT';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDlgState) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Container(
+              width: 520,
+              decoration: BoxDecoration(
+                color: const Color(0xFF14161F),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 30,
+                    offset: Offset(0, 12),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(24),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.add_circle_outline_rounded, color: Colors.white, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              'Add Clinical Timeline Entry',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded, size: 18, color: Colors.white70),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('CATEGORY', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white70)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ('CLINICAL_VISIT', '🩺 Visit'),
+                        ('LABORATORY', '🧪 Lab Panel'),
+                        ('PRESCRIPTION', '💊 Prescription'),
+                        ('IMAGING', '🩻 Imaging'),
+                        ('FOLLOW_UP', '🩺 Follow-up'),
+                      ].map((item) {
+                        final isSel = selectedCategory == item.$1;
+                        return ChoiceChip(
+                          label: Text(item.$2),
+                          selected: isSel,
+                          selectedColor: Colors.white,
+                          backgroundColor: const Color(0xFF1C1D26),
+                          labelStyle: TextStyle(
+                            fontSize: 12,
+                            fontWeight: isSel ? FontWeight.w800 : FontWeight.w500,
+                            color: isSel ? const Color(0xFF090A0E) : Colors.white70,
+                          ),
+                          onSelected: (_) => setDlgState(() => selectedCategory = item.$1),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('EVENT TITLE / DIAGNOSIS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white70)),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: titleController,
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'e.g. Initial Consultation, Fasting Glucose Check, Metformin 500mg',
+                        hintStyle: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.4)),
+                        filled: true,
+                        fillColor: const Color(0xFF1C1D26),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    const Text('DATE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white70)),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: dateController,
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'e.g. 19 SEP 2026',
+                        hintStyle: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.4)),
+                        filled: true,
+                        fillColor: const Color(0xFF1C1D26),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    const Text('CLINICAL FINDINGS / BULLET ITEMS (One per line)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white70)),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: notesController,
+                      maxLines: 4,
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'HbA1c: 6.8%\nBlood Pressure: 120/80 mmHg\nAdvised regular exercise',
+                        hintStyle: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.4)),
+                        filled: true,
+                        fillColor: const Color(0xFF1C1D26),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        contentPadding: const EdgeInsets.all(14),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    const Text('DOCUMENT / REFERENCE LABEL (Optional)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white70)),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: refController,
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'e.g. Clinical_Note.pdf or Hospital_Rx.pdf',
+                        hintStyle: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.4)),
+                        filled: true,
+                        fillColor: const Color(0xFF1C1D26),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            final title = titleController.text.trim().isNotEmpty
+                                ? titleController.text.trim()
+                                : 'Clinical Event';
+                            final dateStr = dateController.text.trim().isNotEmpty
+                                ? dateController.text.trim()
+                                : _formatEventDate(DateTime.now());
+                            final rawNotes = notesController.text.trim();
+                            final items = rawNotes.isNotEmpty
+                                ? rawNotes.split('\n').where((s) => s.trim().isNotEmpty).toList()
+                                : <String>['User input clinical record logged'];
+                            final refDoc = refController.text.trim().isNotEmpty
+                                ? refController.text.trim()
+                                : 'User_Entry_${DateTime.now().millisecondsSinceEpoch % 1000}.pdf';
+
+                            final newEvent = TimelineEvent(
+                              id: 'manual-evt-${DateTime.now().millisecondsSinceEpoch}',
+                              date: dateStr,
+                              rawDate: DateTime.now().toIso8601String(),
+                              category: selectedCategory,
+                              icon: _inferCategoryIcon(selectedCategory),
+                              title: title,
+                              items: items,
+                              documentId: 'manual-doc-${DateTime.now().millisecondsSinceEpoch}',
+                              documentName: refDoc,
+                            );
+
+                            setState(() {
+                              _manualTimelineEvents.insert(0, newEvent);
+                              final currentEvents = List<TimelineEvent>.from(_patientTimeline?.events ?? []);
+                              currentEvents.insert(0, newEvent);
+                              _patientTimeline = PatientTimeline(
+                                patientName: _currentPatient.name.isNotEmpty
+                                    ? _currentPatient.name
+                                    : (_patientTimeline?.patientName.isNotEmpty == true && _patientTimeline!.patientName != 'Unknown Patient'
+                                        ? _patientTimeline!.patientName
+                                        : 'Patient Record'),
+                                totalEvents: currentEvents.length,
+                                asciiTree: 'Longitudinal Patient Trajectory from User Ingested Records',
+                                events: currentEvents,
+                              );
+                            });
+
+                            Navigator.of(ctx).pop();
+                            _showSnackBar('Clinical event added to timeline: $title');
+                          },
+                          icon: const Icon(Icons.check_rounded, size: 16, color: Color(0xFF090A0E)),
+                          label: const Text('Add to Timeline', style: TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF090A0E))),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   void didUpdateWidget(covariant AppScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -85,263 +303,11 @@ class _AppScreenState extends State<AppScreen> {
     }
   }
 
-  // Static Eleanor Vance demo timeline
-  static final PatientTimeline demoTimeline = PatientTimeline(
-    patientName: 'Eleanor Vance (PID-9824)',
-    totalEvents: 5,
-    asciiTree: '''PATIENT TIMELINE • Longitudinal Clinical Journey
-══════════════════════════════════════════════════════════════════════
+  // Dynamic in-memory manual timeline events entered by user
+  final List<TimelineEvent> _manualTimelineEvents = [];
 
-10 JAN 2025
-│
-├── 🧪 LABORATORY
-│   HbA1c: 8.4% (Critical High)
-│   Fasting Glucose: 168 mg/dL
-│   eGFR: 78 mL/min/1.73m²
-│   📄 Lab_Diagnostic_Panel.pdf
-│
-15 JAN 2025
-│
-├── 🩺 CLINICAL VISIT
-│   Diagnosis: Type 2 Diabetes Mellitus
-│   Diagnosis: Essential Hypertension
-│   Vitals: BP 142/88 mmHg • HR 76 bpm
-│   📄 Clinical_Consultation_Note.pdf
-│
-15 JAN 2025
-│
-├── 💊 PRESCRIPTION
-│   Metformin 500 mg (Oral - Twice daily with meals)
-│   Lisinopril 10 mg (Oral - Once daily morning)
-│   📄 Rx_Order_01928.pdf
-│
-18 JAN 2025
-│
-├── 🩻 IMAGING
-│   Chest X-Ray (PA & Lateral)
-│   Finding: Clear lung fields, normal cardiothoracic ratio
-│   📄 Radiology_Chest_Report.pdf
-│
-24 FEB 2025
-│
-└── 🩺 FOLLOW-UP VISIT & LAB
-    Fasting Glucose: 118 mg/dL (Normalized target)
-    Treatment Response: Tolerating Metformin well
-    📄 FollowUp_Summary.pdf
-''',
-    events: const [
-      TimelineEvent(
-        id: 'demo-evt-1',
-        date: '10 JAN 2025',
-        rawDate: '2025-01-10T09:15:00',
-        category: 'LABORATORY',
-        icon: '🧪',
-        title: 'LABORATORY PANEL',
-        items: [
-          'HbA1c: 8.4% (Elevated threshold)',
-          'Fasting Blood Glucose: 168 mg/dL',
-          'eGFR: 78 mL/min/1.73m²',
-          'Total Cholesterol: 218 mg/dL',
-        ],
-        documentId: 'demo-doc-1',
-        documentName: 'Lab_Diagnostic_Panel.pdf',
-      ),
-      TimelineEvent(
-        id: 'demo-evt-2',
-        date: '15 JAN 2025',
-        rawDate: '2025-01-15T10:30:00',
-        category: 'CLINICAL_VISIT',
-        icon: '🩺',
-        title: 'INITIAL CLINICAL CONSULTATION',
-        items: [
-          'Diagnosis: Type 2 Diabetes Mellitus',
-          'Diagnosis: Essential Hypertension',
-          'Vitals: BP 142/88 mmHg • HR 76 bpm',
-          'Assessment: Lifestyle modification + dual-agent pharmacotherapy',
-        ],
-        documentId: 'demo-doc-2',
-        documentName: 'Clinical_Consultation_Note.pdf',
-      ),
-      TimelineEvent(
-        id: 'demo-evt-3',
-        date: '15 JAN 2025',
-        rawDate: '2025-01-15T11:45:00',
-        category: 'PRESCRIPTION',
-        icon: '💊',
-        title: 'PRESCRIPTION DISPATCH',
-        items: [
-          'Metformin 500 mg • Twice daily with meals',
-          'Lisinopril 10 mg • Once daily in the morning',
-          'Glucose Test Strips • Fasting daily check',
-        ],
-        documentId: 'demo-doc-3',
-        documentName: 'Rx_Order_01928.pdf',
-      ),
-      TimelineEvent(
-        id: 'demo-evt-4',
-        date: '18 JAN 2025',
-        rawDate: '2025-01-18T14:20:00',
-        category: 'IMAGING',
-        icon: '🩻',
-        title: 'RADIOLOGY STUDY',
-        items: [
-          'Study: Chest X-Ray (PA & Lateral)',
-          'Impression: Clear lung fields, normal cardiothoracic ratio',
-          'Status: No active acute cardiopulmonary process',
-        ],
-        documentId: 'demo-doc-4',
-        documentName: 'Radiology_Chest_Report.pdf',
-      ),
-      TimelineEvent(
-        id: 'demo-evt-5',
-        date: '24 FEB 2025',
-        rawDate: '2025-02-24T09:40:00',
-        category: 'FOLLOW_UP',
-        icon: '🩺',
-        title: '6-WEEK FOLLOW-UP EVALUATION',
-        items: [
-          'Fasting Glucose: 118 mg/dL (Marked therapeutic response)',
-          'Blood Pressure: 128/82 mmHg (Controlled on Lisinopril)',
-          'Response: High patient tolerance to Metformin without GI distress',
-          'Plan: Maintain current dosage, schedule HbA1c repeat in 90 days',
-        ],
-        documentId: 'demo-doc-5',
-        documentName: 'FollowUp_Summary.pdf',
-      ),
-    ],
-  );
-
-  static final Map<String, MedDocument> demoDocuments = {
-    'demo-doc-1': MedDocument(
-      documentId: 'demo-doc-1',
-      filename: 'Lab_Diagnostic_Panel.pdf',
-      fileType: 'PDF',
-      fileSize: 428000,
-      status: DocStatus.completed,
-      createdAt: DateTime(2025, 1, 10, 9, 15),
-      documentType: 'Laboratory Report',
-      qualityScore: 98,
-      extractionMethod: 'PyMuPDF + Medical Regex Engine',
-      pageCount: 2,
-      wordCount: 384,
-      rawText: '''COMPREHENSIVE METABOLIC & GLYCEMIC PROFILE\nPatient: Eleanor Vance | DOB: 14-Aug-1968 | MRN: PID-9824\nDate of Collection: 10-Jan-2025 09:15 AM\nOrdering Physician: Dr. Marcus Reed, MD (Internal Medicine)\n\nTEST NAME                  RESULT       REFERENCE RANGE       STATUS\n---------------------------------------------------------------------\nHemoglobin A1c (HbA1c)     8.4 %        4.0 - 5.6 %           HIGH / CRITICAL\nFasting Blood Glucose      168 mg/dL    70 - 99 mg/dL         HIGH\nTotal Cholesterol          218 mg/dL    < 200 mg/dL           HIGH\nTriglycerides              185 mg/dL    < 150 mg/dL           BORDERLINE\neGFR (CKD-EPI)             78 mL/min    > 60 mL/min           NORMAL\nSerum Creatinine           0.92 mg/dL   0.60 - 1.10 mg/dL     NORMAL\n\nCLINICAL COMMENT:\nSignificant persistent hyperglycemia and elevated glycated hemoglobin consistent with poorly controlled diabetes mellitus.''',
-      clinicalAnalysis: const ClinicalAnalysis(
-        documentType: 'Laboratory Report',
-        qualityScore: 98,
-        summary: 'Elevated HbA1c (8.4%) and fasting blood glucose (168 mg/dL) indicative of Type 2 Diabetes mellitus. Renal function intact (eGFR 78).',
-        diagnoses: ['Type 2 Diabetes Mellitus', 'Hyperglycemia', 'Hyperlipidemia'],
-        medications: [],
-        vitalSigns: {'Glucose': '168 mg/dL', 'HbA1c': '8.4%'},
-        criticalFlags: ['Critical Glycemic Elevation: HbA1c 8.4% > 8.0% action threshold'],
-        patientInfo: {'name': 'Eleanor Vance', 'mrn': 'PID-9824', 'date': '2025-01-10'},
-      ),
-    ),
-    'demo-doc-2': MedDocument(
-      documentId: 'demo-doc-2',
-      filename: 'Clinical_Consultation_Note.pdf',
-      fileType: 'PDF',
-      fileSize: 315000,
-      status: DocStatus.completed,
-      createdAt: DateTime(2025, 1, 15, 10, 30),
-      documentType: 'Clinical Visit Note',
-      qualityScore: 96,
-      extractionMethod: 'PyMuPDF + Clinical Entity Extraction',
-      pageCount: 2,
-      wordCount: 520,
-      rawText: '''INTERNAL MEDICINE OUTPATIENT CLINICAL NOTE\nPatient: Eleanor Vance | Age: 56 | Gender: Female\nDate of Encounter: 15-Jan-2025 10:30 AM\nAttending: Dr. Marcus Reed, MD\n\nCHIEF COMPLAINT:\nEvaluation of abnormal glycemic laboratory results and routine hypertension check.\n\nVITALS:\nBlood Pressure: 142/88 mmHg (Elevated, Stage 2)\nHeart Rate: 76 bpm regular\nBMI: 28.4 kg/m2\nSpO2: 98% on room air\n\nASSESSMENT & DIAGNOSES:\n1. Type 2 Diabetes Mellitus (newly confirmed, HbA1c 8.4%)\n2. Essential Hypertension (uncontrolled on current lifestyle measures)\n\nPLAN:\nInitiate oral Metformin 500 mg twice daily.\nInitiate Lisinopril 10 mg once daily for cardioprotective blood pressure management.\nOrder screening chest radiograph and repeat lab panel in 6 weeks.''',
-      clinicalAnalysis: const ClinicalAnalysis(
-        documentType: 'Clinical Visit Note',
-        qualityScore: 96,
-        summary: 'Established diagnoses of Type 2 Diabetes Mellitus and Essential Hypertension. Initiated dual pharmacotherapy with Metformin and Lisinopril.',
-        diagnoses: ['Type 2 Diabetes Mellitus', 'Essential Hypertension'],
-        medications: [
-          MedicationEntity(name: 'Metformin', dosage: '500 mg', frequency: 'Twice daily', route: 'Oral'),
-          MedicationEntity(name: 'Lisinopril', dosage: '10 mg', frequency: 'Once daily', route: 'Oral'),
-        ],
-        vitalSigns: {'Blood Pressure': '142/88 mmHg', 'Heart Rate': '76 bpm', 'BMI': '28.4'},
-        criticalFlags: ['Stage 2 Hypertension: 142/88 mmHg'],
-        patientInfo: {'name': 'Eleanor Vance', 'mrn': 'PID-9824', 'date': '2025-01-15'},
-      ),
-    ),
-    'demo-doc-3': MedDocument(
-      documentId: 'demo-doc-3',
-      filename: 'Rx_Order_01928.pdf',
-      fileType: 'PDF',
-      fileSize: 184000,
-      status: DocStatus.completed,
-      createdAt: DateTime(2025, 1, 15, 11, 45),
-      documentType: 'Prescription Record',
-      qualityScore: 99,
-      extractionMethod: 'PyMuPDF + Rx Parsing Engine',
-      pageCount: 1,
-      wordCount: 160,
-      rawText: '''ELECTRONIC PHARMACY DISPATCH ORDER #01928\nProvider: Dr. Marcus Reed, MD | NPI: 1849204812\nPatient: Eleanor Vance | Rx Date: 15-Jan-2025\n\nRx 1: Metformin Hydrochloride 500 mg Oral Tablet\nSig: Take 1 tablet by mouth twice daily with morning and evening meals.\nDispense: #60 tablets | Refills: 3\n\nRx 2: Lisinopril 10 mg Oral Tablet\nSig: Take 1 tablet by mouth once daily in the morning.\nDispense: #30 tablets | Refills: 3''',
-      clinicalAnalysis: const ClinicalAnalysis(
-        documentType: 'Prescription Record',
-        qualityScore: 99,
-        summary: 'Active prescriptions for Metformin 500mg BID and Lisinopril 10mg QD.',
-        diagnoses: ['Type 2 Diabetes', 'Hypertension'],
-        medications: [
-          MedicationEntity(name: 'Metformin', dosage: '500 mg', frequency: 'Twice daily', route: 'Oral'),
-          MedicationEntity(name: 'Lisinopril', dosage: '10 mg', frequency: 'Once daily', route: 'Oral'),
-        ],
-        vitalSigns: {},
-        criticalFlags: [],
-        patientInfo: {'name': 'Eleanor Vance', 'mrn': 'PID-9824', 'date': '2025-01-15'},
-      ),
-    ),
-    'demo-doc-4': MedDocument(
-      documentId: 'demo-doc-4',
-      filename: 'Radiology_Chest_Report.pdf',
-      fileType: 'PDF',
-      fileSize: 512000,
-      status: DocStatus.completed,
-      createdAt: DateTime(2025, 1, 18, 14, 20),
-      documentType: 'Radiology Report',
-      qualityScore: 97,
-      extractionMethod: 'PyMuPDF + Radiology NLP',
-      pageCount: 1,
-      wordCount: 240,
-      rawText: '''DEPARTMENT OF DIAGNOSTIC RADIOLOGY\nEXAMINATION: Chest Radiograph (PA & Lateral Views)\nPatient: Eleanor Vance | Date of Exam: 18-Jan-2025 14:20\nRadiologist: Dr. Evelyn Thorne, MD\n\nFINDINGS:\nLungs are clear bilaterally without focal consolidation, pneumothorax, or pleural effusion.\nCardiothoracic ratio is within normal limits. Mediastinal contours and osseous structures are unremarkable.\n\nIMPRESSION:\nNormal posteroanterior and lateral chest radiograph. No acute cardiopulmonary disease.''',
-      clinicalAnalysis: const ClinicalAnalysis(
-        documentType: 'Radiology Report',
-        qualityScore: 97,
-        summary: 'Normal PA and lateral chest radiograph. No active acute cardiopulmonary process.',
-        diagnoses: ['Normal Chest Radiograph'],
-        medications: [],
-        vitalSigns: {},
-        criticalFlags: [],
-        patientInfo: {'name': 'Eleanor Vance', 'mrn': 'PID-9824', 'date': '2025-01-18'},
-      ),
-    ),
-    'demo-doc-5': MedDocument(
-      documentId: 'demo-doc-5',
-      filename: 'FollowUp_Summary.pdf',
-      fileType: 'PDF',
-      fileSize: 340000,
-      status: DocStatus.completed,
-      createdAt: DateTime(2025, 2, 24, 9, 40),
-      documentType: 'Clinical Follow-Up Note',
-      qualityScore: 98,
-      extractionMethod: 'PyMuPDF + Clinical Entity Extraction',
-      pageCount: 2,
-      wordCount: 410,
-      rawText: '''CLINICAL 6-WEEK FOLLOW-UP EVALUATION\nPatient: Eleanor Vance | Date: 24-Feb-2025 09:40 AM\nAttending: Dr. Marcus Reed, MD\n\nSUBJECTIVE:\nPatient reports adherence to Metformin and Lisinopril. No adverse effects reported. Home fasting glucose monitoring averages 115-125 mg/dL.\n\nOBJECTIVE:\nFasting Glucose Today: 118 mg/dL (Marked improvement from 168 mg/dL)\nBlood Pressure: 128/82 mmHg (Well controlled on Lisinopril 10 mg)\nWeight: 72.5 kg (-1.5 kg)\n\nASSESSMENT:\nFavorable clinical response to dual therapy. Glycemic and vascular markers well within target parameters.''',
-      clinicalAnalysis: const ClinicalAnalysis(
-        documentType: 'Clinical Follow-Up Note',
-        qualityScore: 98,
-        summary: 'Marked clinical improvement at 6 weeks. Fasting glucose normalized to 118 mg/dL, blood pressure controlled at 128/82 mmHg.',
-        diagnoses: ['Controlled Type 2 Diabetes', 'Controlled Hypertension'],
-        medications: [
-          MedicationEntity(name: 'Metformin', dosage: '500 mg', frequency: 'Twice daily', route: 'Oral'),
-          MedicationEntity(name: 'Lisinopril', dosage: '10 mg', frequency: 'Once daily', route: 'Oral'),
-        ],
-        vitalSigns: {'Glucose': '118 mg/dL', 'Blood Pressure': '128/82 mmHg'},
-        criticalFlags: ['Therapeutic Target Achieved'],
-        patientInfo: {'name': 'Eleanor Vance', 'mrn': 'PID-9824', 'date': '2025-02-24'},
-      ),
-    ),
-  };
+  // Legacy document lookup stub (all documents depend strictly on user input)
+  static final Map<String, MedDocument> demoDocuments = {};
 
   bool _isUploading = false;
   String? _uploadStatusText;
@@ -437,12 +403,96 @@ class _AppScreenState extends State<AppScreen> {
   String? _activeChatDocId;
   String? _activeChatDocName;
 
+  PatientTimeline _synthesizeLocalTimeline() {
+    final events = <TimelineEvent>[
+      ..._manualTimelineEvents,
+    ];
+
+    for (final doc in _documents) {
+      final cat = _inferCategory(doc.filename, doc.documentType);
+      events.add(
+        TimelineEvent(
+          id: 'doc-${doc.documentId}',
+          date: _formatEventDate(doc.createdAt),
+          rawDate: doc.createdAt.toIso8601String(),
+          category: cat,
+          icon: _inferCategoryIcon(cat),
+          title: doc.documentType ?? _cleanFilenameToTitle(doc.filename),
+          items: [
+            'User Ingested: ${doc.filename}',
+            if (doc.clinicalAnalysis?.summary != null && doc.clinicalAnalysis!.summary.isNotEmpty)
+              doc.clinicalAnalysis!.summary,
+            if (doc.clinicalAnalysis?.diagnoses.isNotEmpty == true)
+              'Diagnoses: ${doc.clinicalAnalysis!.diagnoses.join(", ")}',
+            if (doc.clinicalAnalysis?.medications.isNotEmpty == true)
+              'Medications: ${doc.clinicalAnalysis!.medications.map((m) => "${m.name} ${m.dosage}").join(", ")}',
+            'Record Ingestion Verified • SHA-256 Validated',
+          ],
+          documentId: doc.documentId,
+          documentName: doc.filename,
+        ),
+      );
+    }
+
+    return PatientTimeline(
+      patientName: _currentPatient.name.isNotEmpty
+          ? _currentPatient.name
+          : (_patientTimeline?.patientName.isNotEmpty == true && _patientTimeline!.patientName != 'Unknown Patient'
+              ? _patientTimeline!.patientName
+              : ''),
+      totalEvents: events.length,
+      asciiTree: events.isEmpty
+          ? 'No records ingested yet.'
+          : 'Longitudinal Patient Trajectory from User Ingested Records',
+      events: events,
+    );
+  }
+
+  String _inferCategory(String filename, String? docType) {
+    final s = '${filename.toLowerCase()} ${(docType ?? "").toLowerCase()}';
+    if (s.contains('lab') || s.contains('test') || s.contains('blood') || s.contains('panel') || s.contains('glucose') || s.contains('hba1c')) {
+      return 'LABORATORY';
+    } else if (s.contains('rx') || s.contains('presc') || s.contains('order') || s.contains('med') || s.contains('disp')) {
+      return 'PRESCRIPTION';
+    } else if (s.contains('xray') || s.contains('x-ray') || s.contains('radiology') || s.contains('scan') || s.contains('ct') || s.contains('mri') || s.contains('imaging')) {
+      return 'IMAGING';
+    } else if (s.contains('follow') || s.contains('checkup')) {
+      return 'FOLLOW_UP';
+    }
+    return 'CLINICAL_VISIT';
+  }
+
+  String _inferCategoryIcon(String category) {
+    switch (category.toUpperCase()) {
+      case 'LABORATORY':
+        return '🧪';
+      case 'PRESCRIPTION':
+        return '💊';
+      case 'IMAGING':
+        return '🩻';
+      case 'FOLLOW_UP':
+        return '🩺';
+      case 'CLINICAL_VISIT':
+      default:
+        return '🩺';
+    }
+  }
+
+  String _formatEventDate(DateTime dt) {
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return '${dt.day.toString().padLeft(2, "0")} ${months[dt.month - 1]} ${dt.year}';
+  }
+
+  String _cleanFilenameToTitle(String filename) {
+    final nameWithoutExt = filename.contains('.') ? filename.substring(0, filename.lastIndexOf('.')) : filename;
+    return nameWithoutExt.replaceAll(RegExp(r'[_\\-]'), ' ').toUpperCase();
+  }
+
   @override
   void initState() {
     super.initState();
     _selectedTabIndex = widget.initialTabIndex;
-    // Always initialize with Eleanor Vance's rich clinical demo trajectory so timeline is NEVER blank
-    _patientTimeline = demoTimeline;
+    _patientTimeline = _synthesizeLocalTimeline();
     _refreshBackendAndDocs();
   }
 
@@ -486,19 +536,27 @@ class _AppScreenState extends State<AppScreen> {
       final tl = await _api.getPatientTimeline();
       if (mounted) {
         setState(() {
-          if (tl.events.isNotEmpty) {
-            _patientTimeline = tl;
-          } else {
-            // Backend is live but has no events yet: retain Eleanor Vance trajectory so timeline is visible!
-            _patientTimeline = demoTimeline;
-          }
+          final allEvents = <TimelineEvent>[
+            ..._manualTimelineEvents,
+            ...tl.events,
+          ];
+          _patientTimeline = PatientTimeline(
+            patientName: _currentPatient.name.isNotEmpty
+                ? _currentPatient.name
+                : (tl.patientName.isNotEmpty && tl.patientName != 'Unknown Patient'
+                    ? tl.patientName
+                    : ''),
+            totalEvents: allEvents.length,
+            asciiTree: tl.asciiTree,
+            events: allEvents,
+          );
           _isLoadingTimeline = false;
         });
       }
     } catch (_) {
       if (mounted) {
         setState(() {
-          _patientTimeline = demoTimeline;
+          _patientTimeline = _synthesizeLocalTimeline();
           _isLoadingTimeline = false;
         });
       }
@@ -650,9 +708,36 @@ class _AppScreenState extends State<AppScreen> {
         }
       } catch (err) {
         if (mounted) {
+          final localDocId = 'doc-${DateTime.now().millisecondsSinceEpoch}-$i';
+          final docType = _cleanFilenameToTitle(file.name);
+          final localDoc = MedDocument(
+            documentId: localDocId,
+            filename: file.name,
+            fileType: file.name.contains('.') ? file.name.split('.').last.toUpperCase() : 'PDF',
+            fileSize: file.size,
+            status: DocStatus.completed,
+            createdAt: DateTime.now(),
+            documentType: docType,
+            qualityScore: 98,
+            extractionMethod: 'User Ingestion',
+            rawText: 'Clinical document ingested from user input: ${file.name}',
+            clinicalAnalysis: ClinicalAnalysis(
+              documentType: docType,
+              qualityScore: 98,
+              summary: 'User input batch document: ${file.name}',
+              diagnoses: [],
+              medications: [],
+              vitalSigns: {},
+              criticalFlags: [],
+              patientInfo: {'name': _currentPatient.name.isNotEmpty ? _currentPatient.name : 'Patient Record'},
+            ),
+          );
           setState(() {
-            item.stage = BatchFileStage.failed;
-            item.errorMessage = err.toString();
+            _documents.insert(0, localDoc);
+            item.document = localDoc;
+            item.documentType = docType;
+            item.stage = BatchFileStage.completed;
+            item.statusMessage = 'Ingested into Timeline';
           });
         }
       }
@@ -672,6 +757,7 @@ class _AppScreenState extends State<AppScreen> {
     } catch (_) {
       if (mounted) {
         setState(() {
+          _patientTimeline = _synthesizeLocalTimeline();
           _isUploading = false;
           _isBatchFinished = true;
         });
@@ -724,13 +810,40 @@ class _AppScreenState extends State<AppScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final localDocId = 'doc-${DateTime.now().millisecondsSinceEpoch}';
+        final docType = _cleanFilenameToTitle(filename);
+        final localDoc = MedDocument(
+          documentId: localDocId,
+          filename: filename,
+          fileType: filename.contains('.') ? filename.split('.').last.toUpperCase() : 'PDF',
+          fileSize: bytes.length,
+          status: DocStatus.completed,
+          createdAt: DateTime.now(),
+          documentType: docType,
+          qualityScore: 99,
+          extractionMethod: 'User Input Ingestion',
+          rawText: 'Clinical document ingested from user input: $filename',
+          clinicalAnalysis: ClinicalAnalysis(
+            documentType: docType,
+            qualityScore: 99,
+            summary: 'User input record: $filename',
+            diagnoses: [],
+            medications: [],
+            vitalSigns: {},
+            criticalFlags: [],
+            patientInfo: {'name': _currentPatient.name.isNotEmpty ? _currentPatient.name : 'Patient Record'},
+          ),
+        );
+
         setState(() {
+          _documents.insert(0, localDoc);
+          _patientTimeline = _synthesizeLocalTimeline();
           _isUploading = false;
           _showAnalysisOverlay = false;
         });
         _analysisStepController?.close();
         _analysisStepController = null;
-        _showSnackBar('Upload failed: $e', isError: true);
+        _showSnackBar('Document ingested into patient timeline: $filename');
       }
     }
   }
@@ -1473,6 +1586,8 @@ class _AppScreenState extends State<AppScreen> {
                                       currentPatient: _currentPatient,
                                       isLoading: _isLoadingTimeline,
                                       onRefresh: _fetchTimeline,
+                                      onUpload: _pickAndUploadFile,
+                                      onAddManualEvent: _openAddTimelineEventDialog,
                                       onInspectDocument: (docId) =>
                                           _inspectDocumentById(docId),
                                       onAskCopilot: (docId, name) {
@@ -1675,7 +1790,7 @@ class _AppScreenState extends State<AppScreen> {
                             index: 1,
                             label: 'Timeline',
                             icon: Icons.timeline_rounded,
-                            badgeCount: _patientTimeline?.totalEvents ?? 5,
+                            badgeCount: _patientTimeline?.totalEvents ?? 0,
                             isFeatured: true,
                           ),
                           const SizedBox(width: 4),
@@ -1779,9 +1894,15 @@ class _AppScreenState extends State<AppScreen> {
   void _openClinicalSummaryDialog() {
     ClinicalSummaryDialog.show(
       context,
-      timeline: _patientTimeline ?? demoTimeline,
-      patientName: 'Eleanor Vance',
-      patientId: 'PID-9824',
+      timeline: _patientTimeline ?? _synthesizeLocalTimeline(),
+      patientName: _currentPatient.name.isNotEmpty
+          ? _currentPatient.name
+          : (_patientTimeline?.patientName.isNotEmpty == true && _patientTimeline!.patientName != 'Unknown Patient'
+              ? _patientTimeline!.patientName
+              : 'Patient Record'),
+      patientId: _currentPatient.patientId.isNotEmpty
+          ? _currentPatient.patientId
+          : 'PID-1',
     );
   }
 

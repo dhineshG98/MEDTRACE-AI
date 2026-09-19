@@ -131,11 +131,11 @@ class _PatientTimelineViewState extends State<PatientTimelineView> {
                           border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
                         ),
                         child: Text(
-                          widget.currentPatient != null
-                              ? 'Patient: ${widget.currentPatient!.name} (${widget.currentPatient!.patientId}) • ${widget.currentPatient!.bloodGroup}'
-                              : (timeline?.patientName.isNotEmpty == true
-                                  ? 'Patient: ${timeline!.patientName}'
-                                  : 'Patient: Arun Kumar (PAT-0001) • B+'),
+                          widget.currentPatient != null && widget.currentPatient!.name.isNotEmpty
+                              ? 'Patient: ${widget.currentPatient!.name} (${widget.currentPatient!.patientId.isNotEmpty ? widget.currentPatient!.patientId : "PID-1"}) • ${widget.currentPatient!.bloodGroup.isNotEmpty ? widget.currentPatient!.bloodGroup : "O+"}'
+                              : (timeline != null && timeline.patientName.isNotEmpty && timeline.patientName != 'Unknown Patient'
+                                  ? 'Patient: ${timeline.patientName}'
+                                  : 'No Patient Linked'),
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -154,7 +154,33 @@ class _PatientTimelineViewState extends State<PatientTimelineView> {
               ),
             ),
 
-
+            if (widget.onAddManualEvent != null) ...[
+              OutlinedButton.icon(
+                onPressed: widget.onAddManualEvent,
+                icon: const Icon(Icons.add_rounded, size: 14, color: Colors.white),
+                label: const Text('Add Entry', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: Colors.white)),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: const Color(0xFF141418),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
+            if (widget.onUpload != null) ...[
+              ElevatedButton.icon(
+                onPressed: widget.onUpload,
+                icon: const Icon(Icons.cloud_upload_outlined, size: 14, color: Color(0xFF090A0D)),
+                label: const Text('Upload Records', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Color(0xFF090A0D))),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
             IconButton(
               icon: const Icon(Icons.refresh_rounded, size: 20, color: Colors.white70),
               tooltip: 'Refresh Timeline',
@@ -235,37 +261,71 @@ class _PatientTimelineViewState extends State<PatientTimelineView> {
         // Timeline Events List
         if (events.isEmpty)
           GlassCard(
-            padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+            padding: const EdgeInsets.symmetric(vertical: 56, horizontal: 24),
             child: Center(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.timeline_rounded, size: 48, color: AppColors.textMuted),
-                  const SizedBox(height: 16),
+                  Container(
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.05),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                    ),
+                    child: const Icon(Icons.timeline_rounded, size: 34, color: Colors.white70),
+                  ),
+                  const SizedBox(height: 20),
                   const Text(
-                    'No Timeline Events Found',
+                    'No Timeline Events Yet',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.3,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Upload clinical reports or load the patient dataset to synthesize the trajectory.',
-                    style: TextStyle(fontSize: 13, color: AppColors.textMuted),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton.icon(
-                    onPressed: widget.onRefresh,
-                    icon: const Icon(Icons.sync_rounded, size: 16),
-                    label: const Text('Load Demo Patient Trajectory'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF090A0D),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 460),
+                    child: const Text(
+                      'The patient timeline depends strictly on user input. Upload medical records or add a clinical entry to generate chronological events.',
+                      style: TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.5),
+                      textAlign: TextAlign.center,
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 10,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      if (widget.onUpload != null)
+                        ElevatedButton.icon(
+                          onPressed: widget.onUpload,
+                          icon: const Icon(Icons.cloud_upload_outlined, size: 16),
+                          label: const Text('Upload Medical Records'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF090A0D),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      if (widget.onAddManualEvent != null)
+                        OutlinedButton.icon(
+                          onPressed: widget.onAddManualEvent,
+                          icon: const Icon(Icons.add_rounded, size: 16),
+                          label: const Text('Add Clinical Entry'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
