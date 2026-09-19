@@ -28,4 +28,4 @@ services:
       - key: API_AUTH_TOKEN
         generateValue: true
       - key: CORS_ORIGINS
-        value: "https://medtrace-ai.netlify.app,https://*.netlify.app"
+        value: "https://medtrace-ai.netlify.app,https://*.netlify.app,http://localhost:8080,http://localhost:3000,*"
