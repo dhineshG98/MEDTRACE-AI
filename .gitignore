@@ -2,6 +2,12 @@
 # MedTrace AI - Git Ignore Rules for GitHub
 # ==========================================
 
+# Environment Variables & Secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
 # Flutter & Dart Build Artifacts
 **/build/
 !frontend/MedTraceAI/build/web/**
