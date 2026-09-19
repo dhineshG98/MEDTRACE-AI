@@ -20,6 +20,8 @@ import '../widgets/solutions_mega_menu.dart';
 import '../widgets/clinical_summary_dialog.dart';
 import '../models/patient_profile.dart';
 import '../widgets/patient_details_dialog.dart';
+import '../services/auth_service.dart';
+import '../widgets/user_profile_dialog.dart';
 
 class AppScreen extends StatefulWidget {
   final VoidCallback? onBackToLanding;
@@ -72,6 +74,19 @@ class _AppScreenState extends State<AppScreen> {
           );
         },
       ),
+    );
+  }
+
+  void _openAccountProfileDialog() {
+    UserProfileDialog.show(
+      context,
+      currentPatient: _currentPatient,
+      onOpenPatientProfile: _openPatientDetailsDialog,
+      onSignOut: () {
+        if (widget.onBackToLanding != null) {
+          widget.onBackToLanding!();
+        }
+      },
     );
   }
 
@@ -1886,6 +1901,9 @@ class _AppScreenState extends State<AppScreen> {
           const SizedBox(width: 12),
           // 1-Click Export Clinical Summary Brief Button
           _buildExportSummaryButton(isMobile),
+          const SizedBox(width: 10),
+          // Account Profile Logo Button (Directs to Profile)
+          _buildAccountProfileButton(isMobile),
         ],
       ),
     );
@@ -1949,6 +1967,101 @@ class _AppScreenState extends State<AppScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAccountProfileButton(bool isMobile) {
+    return ListenableBuilder(
+      listenable: AuthService.instance,
+      builder: (context, _) {
+        final user = AuthService.instance.currentUser;
+        final name = user?.name ?? 'Dr. R. Latha';
+        final initial = name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : 'D';
+
+        return Tooltip(
+          message: 'Account Profile ($name) — Click to view profile',
+          child: InkWell(
+            onTap: _openAccountProfileDialog,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 6 : 10,
+                vertical: 5,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFF141624),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.cyan.withValues(alpha: 0.45),
+                  width: 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.cyan.withValues(alpha: 0.15),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundColor: AppColors.cyan,
+                        child: CircleAvatar(
+                          radius: 11,
+                          backgroundColor: const Color(0xFF0F1118),
+                          child: Text(
+                            initial,
+                            style: const TextStyle(
+                              color: AppColors.cyan,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: -1,
+                        right: -1,
+                        child: Container(
+                          width: 6,
+                          height: 6,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF10B981),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (!isMobile) ...[
+                    const SizedBox(width: 7),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 15,
+                      color: Colors.white70,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
