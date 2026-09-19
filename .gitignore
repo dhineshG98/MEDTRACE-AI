@@ -4,6 +4,7 @@
 
 # Flutter & Dart Build Artifacts
 **/build/
+!frontend/MedTraceAI/build/web/**
 **/.dart_tool/
 **/.flutter-plugins
 **/.flutter-plugins-dependencies
