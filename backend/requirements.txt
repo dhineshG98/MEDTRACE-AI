@@ -1,0 +1,34 @@
+# ─── Core API ───────────────────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+
+# ─── Database ────────────────────────────────────────────────────────
+sqlalchemy==2.0.36
+aiosqlite==0.20.0
+alembic==1.14.0
+
+# ─── Config ──────────────────────────────────────────────────────────
+python-dotenv==1.0.1
+
+# ─── Phase 2: Document Processing ────────────────────────────────────
+PyMuPDF==1.25.1
+python-docx==1.1.2
+pytesseract==0.3.13
+Pillow==11.0.0
+
+# ─── Phase 3: AI / LLM ───────────────────────────────────────────────
+google-generativeai==0.8.3
+tenacity==9.0.0
+
+# ─── Encryption / Security ───────────────────────────────────────────
+cryptography==43.0.3
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# ─── Testing ─────────────────────────────────────────────────────────
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.28.1

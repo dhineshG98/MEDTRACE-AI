@@ -1,0 +1,13 @@
+OUTPATIENT CLINICAL NOTE
+Date: 2025-02-10
+Provider: Dr. Sarah Jenkins, MD (Internal Medicine)
+Patient: James Harrison, Age: 45, Gender: Male, ID: MRN-102938
+
+ALLERGIES & ADVERSE REACTIONS:
+Patient is NOT allergic to penicillin.
+No known drug allergies (NKDA).
+Denies allergy to sulfa medications.
+Negative for environmental allergies.
+
+ASSESSMENT / DIAGNOSIS:
+Acute bronchitis. Patient denies chest pain and denies shortness of breath.

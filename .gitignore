@@ -1,0 +1,51 @@
+# ==========================================
+# MedTrace AI - Git Ignore Rules for GitHub
+# ==========================================
+
+# Flutter & Dart Build Artifacts
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/coverage/
+app.*.symbols
+app.*.map.json
+
+# Python Virtual Environments & Caches
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
+**/__pycache__/
+*.py[cod]
+*$py.class
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Runtime Database & Encrypted Uploads
+**/backend/uploads/*.enc
+**/backend/uploads/*.pdf
+**/backend/uploads/*.png
+**/backend/uploads/*.docx
+**/backend/uploads/*.csv
+**/backend/uploads/*.xlsx
+!**/backend/sample_data/**
+**/medtrace.db
+*.db-journal
+
+# IDEs & System Caches
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+*.log
+
+# ZIP files
+*.zip

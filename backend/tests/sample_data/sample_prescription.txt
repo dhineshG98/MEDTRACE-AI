@@ -1,0 +1,40 @@
+ST. JUDE MEDICAL CENTER
+Department of Internal Medicine
+100 Metro Health Plaza, Suite 400
+
+PHYSICIAN ORDER / PRESCRIPTION RECORD
+Date: 2025-01-15
+Encounter ID: ENC-2025-9941
+Attending Physician: Dr. Robert Vance, MD (Cardiology)
+
+PATIENT INFORMATION:
+Patient Name: Eleanor Bennett
+Age: 58
+Gender: Female
+MRN / Patient ID: MRN-884920
+
+DIAGNOSIS / CONDITIONS:
+1. Essential Hypertension
+2. Type 2 Diabetes Mellitus
+
+ACTIVE MEDICATIONS / RX:
+1. AMLODIPINE 5MG oral tablet
+   Sig: Take 1 tablet by mouth daily
+   Duration: 90 days
+   Indication: Hypertension
+2. METFORMIN HCL 500MG oral tablet
+   Sig: Take 1 tablet by mouth twice daily with meals
+   Duration: 90 days
+   Indication: Type 2 Diabetes Mellitus
+
+ALLERGIES & ADVERSE REACTIONS:
+- Penicillin (Reaction: Urticaria / skin rash)
+- Sulfa drugs: Denies allergy, no known adverse reaction
+
+LABORATORY FINDINGS:
+- Fasting Blood Glucose: 138 mg/dL (Ref: 70 - 99 mg/dL)
+- HbA1c: 7.2 % (Ref: < 5.7%)
+- Serum Creatinine: 0.9 mg/dL (Ref: 0.7 - 1.3 mg/dL)
+
+NEXT FOLLOW-UP:
+Return to clinic in 3 months for repeat HbA1c and metabolic panel.
