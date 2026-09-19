@@ -33,8 +33,8 @@ class _PatientDetailsDialogState extends State<PatientDetailsDialog> {
     _nameController = TextEditingController(text: widget.initialProfile.name);
     _dobController = TextEditingController(text: widget.initialProfile.dob);
     _phoneController = TextEditingController(text: widget.initialProfile.phone);
-    _selectedGender = widget.initialProfile.gender;
-    _selectedBloodGroup = widget.initialProfile.bloodGroup;
+    _selectedGender = widget.initialProfile.gender.isNotEmpty ? widget.initialProfile.gender : 'Male';
+    _selectedBloodGroup = widget.initialProfile.bloodGroup.isNotEmpty ? widget.initialProfile.bloodGroup : 'O+';
   }
 
   @override
@@ -47,13 +47,20 @@ class _PatientDetailsDialogState extends State<PatientDetailsDialog> {
   }
 
   void _handleSave() {
+    final patientId = _idController.text.trim().isNotEmpty
+        ? _idController.text.trim()
+        : 'PID-${DateTime.now().millisecondsSinceEpoch % 10000}';
+    final name = _nameController.text.trim().isNotEmpty
+        ? _nameController.text.trim()
+        : 'Patient Record';
+
     final updated = PatientProfile(
-      patientId: _idController.text.trim().isEmpty ? 'PAT-0001' : _idController.text.trim(),
-      name: _nameController.text.trim().isEmpty ? 'Arun Kumar' : _nameController.text.trim(),
-      dob: _dobController.text.trim().isEmpty ? '15-06-1998' : _dobController.text.trim(),
+      patientId: patientId,
+      name: name,
+      dob: _dobController.text.trim(),
       gender: _selectedGender,
       bloodGroup: _selectedBloodGroup,
-      phone: _phoneController.text.trim().isEmpty ? 'XXXXX XXXXX' : _phoneController.text.trim(),
+      phone: _phoneController.text.trim(),
     );
     widget.onSave(updated);
     Navigator.of(context).pop();

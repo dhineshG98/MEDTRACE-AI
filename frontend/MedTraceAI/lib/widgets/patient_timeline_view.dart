@@ -9,6 +9,8 @@ class PatientTimelineView extends StatefulWidget {
   final PatientProfile? currentPatient;
   final bool isLoading;
   final VoidCallback onRefresh;
+  final VoidCallback? onUpload;
+  final VoidCallback? onAddManualEvent;
   final Function(String documentId)? onInspectDocument;
   final Function(String documentId, String documentName)? onAskCopilot;
 
@@ -18,6 +20,8 @@ class PatientTimelineView extends StatefulWidget {
     this.currentPatient,
     required this.isLoading,
     required this.onRefresh,
+    this.onUpload,
+    this.onAddManualEvent,
     this.onInspectDocument,
     this.onAskCopilot,
   });

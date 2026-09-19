@@ -17,12 +17,12 @@ class PatientProfile {
 
   factory PatientProfile.defaultProfile() {
     return const PatientProfile(
-      patientId: 'PAT-0001',
-      name: 'Arun Kumar',
-      dob: '15-06-1998',
-      gender: 'Male',
-      bloodGroup: 'B+',
-      phone: 'XXXXX XXXXX',
+      patientId: '',
+      name: '',
+      dob: '',
+      gender: '',
+      bloodGroup: '',
+      phone: '',
     );
   }
 

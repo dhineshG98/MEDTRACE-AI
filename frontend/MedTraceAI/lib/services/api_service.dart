@@ -25,12 +25,27 @@ class ApiException implements Exception {
 ///
 /// Android emulator uses http://10.0.2.2:8000
 ///
+/// In production (Netlify), it auto-detects the Render backend URL.
 /// No AI API key ever lives in this app. The backend holds all secrets.
 class ApiService {
-  static const String baseUrl = String.fromEnvironment(
+  static const String _buildTimeUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:8000',
+    defaultValue: '',
   );
+
+  /// Resolves the backend URL:
+  /// 1. Build-time override via --dart-define=API_BASE_URL=...
+  /// 2. Production (Netlify): points to Render backend
+  /// 3. Local dev: http://localhost:8000
+  static String get baseUrl {
+    if (_buildTimeUrl.isNotEmpty) return _buildTimeUrl;
+    // Auto-detect: if running on Netlify (or any non-localhost), use Render backend
+    final host = Uri.base.host;
+    if (host != 'localhost' && host != '127.0.0.1' && host != '10.0.2.2') {
+      return 'https://medtrace-ai-backend.onrender.com';
+    }
+    return 'http://localhost:8000';
+  }
 
   static const Duration _timeout = Duration(seconds: 90);
 

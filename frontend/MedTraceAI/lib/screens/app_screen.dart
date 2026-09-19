@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import '../models/format_item.dart';
 import '../models/med_document.dart';
 import '../services/api_service.dart';
-import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../widgets/ambient_background.dart';
@@ -1770,16 +1769,8 @@ class _AppScreenState extends State<AppScreen> {
             ),
           ),
           const SizedBox(width: 12),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 1-Click Export Clinical Summary Brief Button
-              _buildExportSummaryButton(isMobile),
-              const SizedBox(width: 10),
-              // Authenticated Google User Profile Pill
-              _buildUserProfileBadge(isMobile, isCompact: isCompact),
-            ],
-          ),
+          // 1-Click Export Clinical Summary Brief Button
+          _buildExportSummaryButton(isMobile),
         ],
       ),
     );
@@ -1840,151 +1831,7 @@ class _AppScreenState extends State<AppScreen> {
     );
   }
 
-  Widget _buildUserProfileBadge(bool isMobile, {bool isCompact = false}) {
-    return ListenableBuilder(
-      listenable: AuthService.instance,
-      builder: (context, _) {
-        final user = AuthService.instance.currentUser;
-        final name = user?.name ?? 'Dr. R. Latha';
-        final email = user?.email ?? 'rlatha@hospital.org';
-        final initial = name.isNotEmpty ? name[0].toUpperCase() : 'G';
 
-        return PopupMenuButton<String>(
-          offset: const Offset(0, 42),
-          color: const Color(0xFF14161F),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-          ),
-          onSelected: (value) async {
-            if (value == 'logout' || value == 'switch') {
-              await AuthService.instance.signOut();
-              if (widget.onBackToLanding != null) {
-                widget.onBackToLanding!();
-              }
-            }
-          },
-          itemBuilder: (ctx) => [
-            PopupMenuItem(
-              enabled: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF10B981),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'Google Account Connected',
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF10B981),
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    email,
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      color: Colors.white.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const PopupMenuDivider(),
-            const PopupMenuItem(
-              value: 'switch',
-              child: Row(
-                children: [
-                  Icon(Icons.switch_account_outlined, size: 16, color: Colors.white),
-                  SizedBox(width: 10),
-                  Text('Switch Account', style: TextStyle(fontSize: 12.5, color: Colors.white)),
-                ],
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'logout',
-              child: Row(
-                children: [
-                  Icon(Icons.logout_rounded, size: 16, color: Color(0xFFF87171)),
-                  SizedBox(width: 10),
-                  Text('Sign Out', style: TextStyle(fontSize: 12.5, color: Color(0xFFF87171))),
-                ],
-              ),
-            ),
-          ],
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: isMobile ? 8 : 10,
-              vertical: 5,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFF141418),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 12,
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    initial,
-                    style: const TextStyle(
-                      color: Color(0xFF090A0E),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                if (!isMobile && !isCompact) ...[
-                  const SizedBox(width: 8),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 15,
-                    color: Colors.white70,
-                  ),
-                ],
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Widget _buildNavTab({
     required int index,
